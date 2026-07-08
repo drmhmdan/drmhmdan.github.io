@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <script>document.documentElement.classList.remove('no-js');</script>
   <meta name="description" content="Dr. med. Mohammad Hamdan, MD, MHBA, FEBNS — Oberarzt for spine surgery and neurosurgery at Fachklinik 360° Ratingen.">
   <meta name="keywords" content="Mohammad Hamdan, neurosurgery, spine surgery, FEBNS, Fachklinik 360, Germany">
   <meta name="author" content="Dr. med. Mohammad Hamdan">
@@ -13,8 +14,8 @@
   <link rel="stylesheet" href="portfolio2026-v10.css">
   <script type="importmap">
   { "imports": {
-      "three": "https://cdn.jsdelivr.net/npm/three@latest/build/three.module.js",
-      "three/addons/": "https://cdn.jsdelivr.net/npm/three@latest/examples/jsm/"
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
   } }
   </script>
 </head>
@@ -47,6 +48,7 @@
       <a href="#credentials">Credentials</a>
       <a href="#research">Research</a>
       <a href="#capabilities">Capabilities</a>
+      <a href="#contact">Contact</a>
       <a href="mailto:dr.mhmdan@gmail.com" class="nav-cta">Get in touch</a>
     </nav>
   </header>
@@ -59,7 +61,10 @@
 
       <div class="hero-image-col">
         <div class="portrait-wrap">
-          <img src="portfoioPortrait.png" alt="Dr. med. Mohammad Hamdan" loading="eager" decoding="async">
+          <picture>
+            <source srcset="portfolioPortrait.webp" type="image/webp">
+            <img src="portfolioPortrait.png" alt="Dr. med. Mohammad Hamdan" loading="eager" decoding="async">
+          </picture>
           <div class="portrait-overlay" aria-hidden="true"></div>
         </div>
       </div>
@@ -922,7 +927,7 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
     function place(progress, t) {
       ptx += (ptxT - ptx) * 0.06;
       pty += (ptyT - pty) * 0.06;
-      const idleX = Math.sin(t * 0.12) * 0.5, idleY = Math.cos(t * 0.1) * 0.3;
+      const idleX = reduce ? 0 : Math.sin(t * 0.12) * 0.5, idleY = reduce ? 0 : Math.cos(t * 0.1) * 0.3;
 
       // camera dolly: follows the curve from the side, pulling in close to
       // the brain as progress approaches the end
@@ -974,12 +979,15 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
       brainPointsObj.material.opacity = 0.85 * reveal;
       brainLinesObj.material.opacity = 0.16 * reveal;
       brainGroup.scale.setScalar(0.7 + 0.3 * reveal);
-      brainGroup.rotation.y = t * 0.08;
+      brainGroup.rotation.y = reduce ? 0 : t * 0.08;
 
       composer.render();
     }
 
-    if (reduce || !hasGSAP) {
+    if (!hasGSAP) {
+      // No GSAP/ScrollTrigger -> can't drive by scroll. Render a static framed
+      // view and show only the closing caption. (reduced-motion still gets the
+      // full scroll-driven scene below -- the user controls it, so it stays.)
       caps.forEach((c, i) => {
         const isLast = i === caps.length - 1;
         c.style.display = isLast ? 'block' : 'none';
